@@ -3,7 +3,7 @@
 
 import Header from '@/Components/Header'
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 export default function Home() {
 
@@ -16,10 +16,21 @@ export default function Home() {
   ]
 
   const [prod, setProd] = useState({})
+  const [item, setItem] = useState([])
 
   const handleChange = (e) => {
     setProd({...prod, [e.target.name]: e.target.value})
   }
+
+
+  useEffect(() => {
+    const fetchProd = async () =>{
+      const response = await fetch('/api/products')
+      let rjson = await response.json()
+      setItem(rjson.products)
+    }
+    fetchProd()
+  },[])
 
   const addP = async (e) => {
     e.preventDefault();
@@ -50,7 +61,7 @@ export default function Home() {
     <Header/>
     <div className="m-10">
       <div>
-        <h1 className="section-name bg-pink-100 mx-auto px-2 rounded m-5">Current Stock</h1>
+        <h1 className="section-name mx-auto px-2 rounded m-5">Current Stock</h1>
       </div>
       <div>
         <div className="flex items-center mb-4">
@@ -75,7 +86,7 @@ export default function Home() {
           <input
             id='quantity'
             name='quantity'
-            type="text"
+            type="number"
             placeholder="Enter the qty"
             className="border p-2 rounded-l"
             onChange={handleChange}
@@ -83,7 +94,7 @@ export default function Home() {
           <input
             id='price'
             name='price'
-            type="text"
+            type="number"
             placeholder="Enter the price"
             className="border p-2 rounded-l"
             onChange={handleChange}
@@ -110,7 +121,7 @@ export default function Home() {
           </tr>
         </thead>
         <thead>
-          {ingredients.map((ingredient, index) => (
+          {item.map((ingredient, index) => (
             <tr key={index}>
               <td className="py-2 px-4 border-b text-center">{ingredient.name}</td>
               <td className="py-2 px-4 border-b text-center">
